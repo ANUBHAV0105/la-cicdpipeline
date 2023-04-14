@@ -97,54 +97,32 @@
         "definition": {
           "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
           "actions": {
-            "Put_a_message_on_a_queue_(V2)": {
-              "type": "ApiConnection",
+            "Response": {
+              "type": "Response",
+              "kind": "http",
               "inputs": {
-                "host": {
-                  "connection": {
-                    "name": "@parameters('$connections')['azurequeues']['connectionId']"
-                  }
-                },
-                "method": "post",
-                "body": "Hello",
-                "path": "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/queues/@{encodeURIComponent('queue1')}/messages"
+                "statusCode": 200,
+                "body": "@triggerBody()"
               },
               "runAfter": {}
             }
           },
-          "parameters": {
-            "$connections": {
-              "defaultValue": {},
-              "type": "Object"
-            }
-          },
+          "parameters": {},
           "triggers": {
-            "Recurrence": {
-              "type": "Recurrence",
-              "recurrence": {
-                "frequency": "Minute",
-                "interval": 3
+            "manual": {
+              "type": "Request",
+              "kind": "Http",
+              "inputs": {
+                "method": "GET"
               }
             }
           },
           "contentVersion": "1.0.0.0",
           "outputs": {}
         },
-        "parameters": {
-          "$connections": {
-            "value": {
-              "azurequeues": {
-                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', parameters('logicAppLocation'), '/managedApis/', 'azurequeues')]",
-                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('azurequeues_1_Connection_Name'))]",
-                "connectionName": "[parameters('azurequeues_1_Connection_Name')]"
-              }
-            }
-          }
-        }
+        "parameters": {}
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/connections', parameters('azurequeues_1_Connection_Name'))]"
-      ]
+      "dependsOn": []
     },
     {
       "type": "MICROSOFT.WEB/CONNECTIONS",
